@@ -140,6 +140,7 @@ class Mooa {
   reRouter(eventArguments?: any) {
     const that = this
     async function performAppChanges() {
+      // ??? 触发routing_before的目的是 ???
       customEvent(MOOA_EVENT.ROUTING_BEFORE)
       const unloadPromises = StatusHelper.getAppsToUnload().map(toUnloadPromise)
 
@@ -151,6 +152,7 @@ class Mooa {
 
       const unmountAllPromise = Promise.all(allUnmountPromises)
 
+      // 获取需要被加载的app数组
       const appsToLoad = StatusHelper.getAppsToLoad(apps)
       const loadThenMountPromises = appsToLoad.map((app: any) => {
         return toLoadPromise(app)

@@ -3,6 +3,7 @@ import { IAppOption } from '../model/IAppOption'
 import { hashCode } from './app.helper'
 import { generateIFrameID } from './dom.utils'
 
+// 下载script
 function loadScriptPromise(src: string, iframeEl: any) {
   return new Promise((resolve, reject) => {
     if (document.getElementById(hashCode(src))) {
@@ -73,6 +74,7 @@ function loadAllAssets(opts: any) {
   })
 }
 
+// 下载script、styles
 function loadAllAssetsForIframe(opts: any) {
   const iframeId = generateIFrameID(opts.name)
   let iframeEl: any = document.getElementById(iframeId)
@@ -106,7 +108,7 @@ function loadAllAssetsForIframe(opts: any) {
 }
 
 function loadAllAssetsForIframeAndUrl(opts: any) {
-  const iframeId = generateIFrameID(opts.name)
+  const iframeId = generateIFrameID(opts.name) // 根据name获得iframeID
   let iframeEl: any = document.getElementById(iframeId)
   if (!iframeEl) {
     return new Promise((resolve, reject) => {

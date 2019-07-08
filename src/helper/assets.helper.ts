@@ -1,5 +1,6 @@
 import { hashCode } from './app.helper'
 
+// 返回一个script标签
 const createScriptTag = function(src: string) {
   const script = document.createElement('script')
   script.type = 'text/javascript'

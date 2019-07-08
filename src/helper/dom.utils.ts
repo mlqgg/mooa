@@ -54,6 +54,7 @@ export function removeApplicationContainer(app: MooaApp) {
   return el.remove()
 }
 
+// 返回是否创建iFrame
 export function isIframeElementExist(mooaApp: MooaApp) {
   return document.getElementById(generateIFrameID(mooaApp.appConfig.name))
 }
@@ -62,6 +63,12 @@ export function isElementExist(appName: string): any {
   return document.querySelector(`app-${appName}`)
 }
 
+/**
+ * 创建iframe容器
+ * 首先需要判断该app的展示形式是否为与其他app共存
+ *  如果共存(coexist)，且已经创建过ifrmae，则将样式置为可见(block)
+ *  如果不共存，则新建iframe
+ */
 export function createApplicationIframeContainer(mooaApp: MooaApp) {
   const opts = mooaApp.appConfig
   if (mooaApp.switchMode === 'coexist') {
@@ -79,8 +86,8 @@ export function createApplicationIframeContainer(mooaApp: MooaApp) {
   iframe.src = window.location.origin + '/assets/iframe.html'
   iframe.id = generateIFrameID(mooaApp.appConfig.name)
 
-  const el = document.createElement(opts.selector)
-
+  // 此处是判断iframe的位置，如果配置文件中指定了iframe的parentElement，则将iframe插入到父元素里面
+  // 否则插入到body下
   if (opts.parentElement) {
     let parentEl = document.querySelector(opts.parentElement)
     if (parentEl) {
@@ -90,14 +97,19 @@ export function createApplicationIframeContainer(mooaApp: MooaApp) {
     document.body.appendChild(iframe)
   }
 
+  // 创建一个app标签
+  const el = document.createElement(opts.selector)
+
   let iframeEl: any = document.getElementById(iframe.id)
-  iframeEl.contentWindow.document.write('<div></div>')
-  iframeEl.contentWindow.document.body.appendChild(el)
+  // contentWindow属性返回<iframe>元素的window对象。你可以使用这个window对象来访问iframe的文档及其内部DOM。contentWindow为只读，但是可以像操作全局window对象一样操作其他属性
+  iframeEl.contentWindow.document.write('<div></div>')  // 像文档中写入一个div标签
+  iframeEl.contentWindow.document.body.appendChild(el)  //将创建好的app标签插入body中
   iframeEl.contentWindow.document.head.innerHTML =
-    iframeEl.contentWindow.document.head.innerHTML + "<base href='/' />"
-  iframeEl.contentWindow.mooa = {
+    iframeEl.contentWindow.document.head.innerHTML + "<base href='/' />" // ??? 插入这个base标签的用途在哪???
+  iframeEl.contentWindow.mooa = {     //以对象字面量的形式初始话iframe中的window.mooa
     isSingleSpa: true
   }
+  // 在iframe中监听路由变化的事件
   iframeEl.contentWindow.addEventListener(MOOA_EVENT.ROUTING_NAVIGATE, function(
     event: CustomEvent
   ) {
@@ -129,7 +141,7 @@ export function removeApplicationIframeContainer(app: MooaApp) {
 
   return iframeEl.remove()
 }
-
+// 生成iframeID
 export function generateIFrameID(name: string) {
-  return name + '_' + hashCode(name)
+  return name + '_' + hashCode(name)  // app name + 根据name生成的key
 }

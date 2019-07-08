@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
     });
   }
 
+  // app初始化
   ngOnInit() {
     // this.mooaWithLink();
     this.mooaWithConfig();
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit {
     that.mooa.registerApplicationByLink('app1', '/assets/app1', mooaRouter.matchRoute('app1'));
     this.mooa.start();
 
+    // 订阅router事件
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
         that.mooa.reRouter(event);

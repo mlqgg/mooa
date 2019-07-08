@@ -30,14 +30,20 @@ function bootstrap(app: MooaApp) {
   window.mooa.name = app.name
 
   if (app.mode && app.mode === 'iframe') {
+    /**
+     * 如果app是以iframe形式嵌入的
+     * 
+     */
     let iframeElementExist = isIframeElementExist(app)
     if (app.switchMode === 'coexist' && iframeElementExist) {
+      // 如果app是以共存的形式展示，并且是之前已经创建过了的，
+      // 则将样式置为可见状态
       iframeElementExist.style.display = 'block'
       return new Promise((resolve, reject) => {
         resolve()
       })
     }
-
+    // 创建app的iframe容器
     createApplicationIframeContainer(app)
 
     if (app.sourceType === 'link') {
